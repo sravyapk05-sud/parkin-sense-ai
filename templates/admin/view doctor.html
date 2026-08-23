@@ -1,0 +1,466 @@
+{% include "admin/admin_headers.html" %}
+<br><br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Experts - Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --info-color: #3498db;
+      --light-bg: #f8f9fa;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      --border-radius: 12px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+      min-height: 100vh;
+    }
+
+    .main-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      margin-bottom: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: var(--card-shadow);
+      border-left: 4px solid var(--primary-color);
+      transition: transform 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .icon-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    #doctorTable {
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+    }
+
+    #doctorTable thead th {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      padding: 15px 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    #doctorTable tbody td {
+      padding: 15px 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    #doctorTable tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    #doctorTable tbody tr:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .doctor-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .proof-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .proof-image:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-approve {
+      background: linear-gradient(135deg, var(--success-color), #27ae60);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-approve:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+      color: white;
+    }
+
+    .btn-reject {
+      background: linear-gradient(135deg, var(--danger-color), #c0392b);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-reject:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+      color: white;
+    }
+
+    .doctor-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .doctor-details {
+      line-height: 1.4;
+    }
+
+    .doctor-name {
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 2px;
+    }
+
+    .doctor-specialty {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+
+    .address-text {
+      max-width: 200px;
+      line-height: 1.4;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .email-text {
+      word-break: break-word;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge-count {
+      background: linear-gradient(135deg, var(--info-color), var(--primary-color));
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+      border-radius: 20px;
+      border: 1.5px solid #e1e5e9;
+      padding: 8px 15px;
+      margin-left: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+      border-radius: 6px;
+      border: 1.5px solid #e1e5e9;
+      padding: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .doctor-info {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .action-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .btn-approve, .btn-reject {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+      }
+
+      .stats-card {
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Content -->
+  <div class="main-content container py-4">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="h3 mb-2"><i class="fas fa-user-md me-2"></i>Expert Management</h1>
+          <p class="mb-0 opacity-75">Review and manage Expert registrations</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <span class="badge-count">
+            <i class="fas fa-users me-1"></i> Total: {{ data|length }} Experts
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Pending Review</h6>
+              <h4 class="mb-0">{{ data|length }}</h4>
+            </div>
+            <div class="icon-circle bg-warning">
+              <i class="fas fa-clock text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Approved</h6>
+              <h4 class="mb-0">{{ ln_app }}</h4>
+            </div>
+            <div class="icon-circle bg-success">
+              <i class="fas fa-check-circle text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Rejected</h6>
+              <h4 class="mb-0">{{ ln_rej }}</h4>
+            </div>
+            <div class="icon-circle bg-danger">
+              <i class="fas fa-times-circle text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">This Month</h6>
+              <h4 class="mb-0">{{ data|length }}</h4>
+            </div>
+            <div class="icon-circle bg-info">
+              <i class="fas fa-calendar text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-container">
+      <div class="table-responsive">
+        <table id="doctorTable" class="table table-hover">
+          <thead>
+            <tr>
+              <th width="5%">#</th>
+              <th width="20%">Expert</th>
+              <th width="15%">Contact</th>
+              <th width="10%">Proof</th>
+              <th width="15%">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in data %}
+            <tr>
+              <td class="text-center">
+                <span class="fw-bold text-primary">{{ forloop.counter }}</span>
+              </td>
+              <td>
+                <div class="doctor-info">
+                  <img src="{{ i.photo }}" alt="Doctor Photo" class="doctor-avatar">
+                  <div class="doctor-details">
+                    <div class="doctor-name">{{ i.name }}</div>
+                    <div class="doctor-specialty">Expert</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="contact-info">
+                  <span class="email-text">
+                    <i class="fas fa-envelope me-1 text-primary"></i>
+                    {{ i.email }}
+                  </span>
+                  <span class="phone-text">
+                    <i class="fas fa-phone me-1 text-success"></i>
+                    {{ i.phonenumber }}
+                  </span>
+                </div>
+              </td>
+              <td class="text-center">
+                <img src="{{ i.proof }}" alt="Proof" class="proof-image"
+                     data-bs-toggle="tooltip" title="Click to view proof">
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <a href="/myapp/aprove_doctor/{{ i.id }}"
+                     class="btn-approve"
+                     data-bs-toggle="tooltip" title="Approve Doctor">
+                    <i class="fas fa-check-circle me-1"></i> Approve
+                  </a>
+                  <a href="/myapp/reject_doctors/{{ i.id }}"
+                     class="btn-reject"
+                     onclick="return confirm('Are you sure you want to reject Dr. {{ i.name }}? This action cannot be undone.');"
+                     data-bs-toggle="tooltip" title="Reject Doctor">
+                    <i class="fas fa-times-circle me-1"></i> Reject
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#doctorTable').DataTable({
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search experts...",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ experts",
+          infoEmpty: "No experts found",
+          infoFiltered: "(filtered from _MAX_ total experts)"
+        },
+        pageLength: 10,
+        lengthChange: true,
+        responsive: true,
+        order: [[1, 'asc']],
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+      });
+
+      // Initialize tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      });
+
+      // Proof image modal
+      $('.proof-image').on('click', function() {
+        var imgSrc = $(this).attr('src');
+        var modalHtml = `
+          <div class="modal fade" id="proofModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Expert Proof Document</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <img src="${imgSrc}" class="img-fluid" alt="Proof Document">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        $('body').append(modalHtml);
+        $('#proofModal').modal('show');
+        $('#proofModal').on('hidden.bs.modal', function() {
+          $(this).remove();
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
+{% include "admin/admin_footer.html" %}

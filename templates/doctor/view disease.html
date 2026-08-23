@@ -1,0 +1,252 @@
+{% include "doctor/doctor_headers.html" %}
+<br><br>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white py-3" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="fas fa-disease me-2"></i>Disease Information</h4>
+                        <span class="badge bg-light text-dark fs-6">
+                            <i class="fas fa-list me-1"></i>{{ data|length }} Diseases
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Search Filter -->
+                    <div class="card mb-4 border-0 shadow-sm">
+                        <div class="card-body" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                            <h5 class="card-title mb-3" style="color: #4361ee;">
+                                <i class="fas fa-search me-2"></i>Search Diseases
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" id="searchInput" class="form-control"
+                                           placeholder="Search by disease name, causes, or symptoms..."
+                                           style="border-color: #4361ee; border-radius: 8px;">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" id="clearSearch" class="btn w-100"
+                                            style="background: linear-gradient(135deg, #95a5a6, #7f8c8d); color: white; border-radius: 8px;">
+                                        <i class="fas fa-times me-2"></i>Clear Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disease Table -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="diseaseTable">
+                                    <thead class="text-white" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                                        <tr>
+                                            <th class="text-center">SL No</th>
+                                            <th>Disease Name</th>
+                                            <th>Causes</th>
+                                            <th>Symptoms</th>
+                                            <th class="text-center">Severity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in data %}
+                                        <tr>
+                                            <td class="text-center">
+                                                <span class="badge" style="background: linear-gradient(135deg, #4cc9f0, #4361ee); color: white;">
+                                                    {{ forloop.counter }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center me-2 text-white"
+                                                         style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                                                        <i class="fas fa-virus"></i>
+                                                    </div>
+                                                    <span class="fw-semibold" style="color: #3a0ca3;">{{ i.name }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="disease-info">
+                                                    <span class="text-muted small">{{ i.causes|truncatewords:20 }}</span>
+                                                    {% if i.causes|wordcount > 20 %}
+                                                    <a href="javascript:void(0)" class="text-primary small ms-1 read-more"
+                                                       data-fulltext="{{ i.causes }}">Read more</a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="disease-info">
+                                                    <span class="text-muted small">{{ i.symptoms|truncatewords:20 }}</span>
+                                                    {% if i.symptoms|wordcount > 20 %}
+                                                    <a href="javascript:void(0)" class="text-primary small ms-1 read-more"
+                                                       data-fulltext="{{ i.symptoms }}">Read more</a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if i.name|length < 15 %}
+                                                    <span class="badge" style="background: linear-gradient(135deg, #2ecc71, #27ae60); color: white;">
+                                                        <i class="fas fa-check-circle me-1"></i>Low
+                                                    </span>
+                                                {% elif i.name|length < 25 %}
+                                                    <span class="badge" style="background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i>Medium
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
+                                                        <i class="fas fa-skull-crossbones me-1"></i>High
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4">
+                                                <div class="text-muted">
+                                                    <i class="fas fa-file-medical-alt fa-2x mb-3" style="color: #4361ee;"></i>
+                                                    <p class="mb-0">No disease information available.</p>
+                                                    <small>Contact administrator to add disease information.</small>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Full Text -->
+<div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                <h5 class="modal-title" id="textModalLabel">Full Information</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalText"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn text-white"
+                        style="background: linear-gradient(135deg, #4361ee, #3a0ca3);"
+                        data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+    }
+
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5em 0.75em;
+        border: none;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4361ee;
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+
+    .disease-info {
+        max-width: 300px;
+    }
+
+    .read-more {
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .read-more:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#diseaseTable').DataTable({
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search diseases...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ diseases",
+                infoEmpty: "No diseases available",
+                infoFiltered: "(filtered from _MAX_ total diseases)"
+            },
+            order: [[1, 'asc']], // Sort by disease name
+            responsive: true
+        });
+
+        // Search functionality
+        $('#searchInput').on('keyup', function() {
+            table.search(this.value).draw();
+        });
+
+        // Clear search
+        $('#clearSearch').on('click', function() {
+            $('#searchInput').val('');
+            table.search('').draw();
+        });
+
+        // Read more functionality
+        $('.read-more').on('click', function() {
+            var fullText = $(this).data('fulltext');
+            $('#modalText').text(fullText);
+            $('#textModal').modal('show');
+        });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+</script>
+
+<br><br>
+{% include "admin/admin_footer.html" %}

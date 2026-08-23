@@ -1,0 +1,81 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>	
+<head>
+<title>Signup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+ <meta name="keywords" content="Queer Signup form a Flat Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+<link href="/static/psignup/css/style.css" rel='stylesheet' type='text/css' />
+<!--webfonts-->
+<link href="//fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900" rel="stylesheet">
+<!--//webfonts-->
+
+</head>
+<body>
+
+ <h1>Signup Form</h1>
+   
+ <div class="w3_frm">
+ <!---728x90---> 
+  <form action="/myapp/doctor_signup_post/" onsubmit="return validate()" method="post" enctype="multipart/form-data" >
+      {% csrf_token %}
+			<h3>Expert Signup Form</h3>
+			<div class="field-w3-agile-grid leftf">	
+				<input type="text" name="textfield" placeholder="Name" pattern="[a-zA-Z]+" required="" />
+			</div>
+            <div class="field-w3-agile-grid leftf">
+				<input type="text" name="textfield4" placeholder="PhoneNumber" maxlength="10" pattern="[6789][0-9]{9}" required="" />
+			</div>
+            <div class="field-w3-agile-grid leftf">
+				<input type="email" name="textfield2" placeholder="Email" required="" />
+			</div>
+			
+
+            <div class="field-w3-agile-grid leftf">
+				<input type="file" name="textfield6" placeholder="Photo" required="" />
+			</div>
+      <div class="field-w3-agile-grid leftf">
+          <span style="color: black">Please choose proof</span>
+				<input type="file" name="textfield8" placeholder="Proof" required="" />
+			</div>
+            <div class="field-w3-agile-grid leftf">
+				<input type="text" name="textfield7" placeholder="Qualification" required="" />
+			</div>
+			<div class="field-w3-agile-grid rightf">
+				<input type="password" name="textfield10" pattern="(?=.*\d)(?=.*[a-z])(?=.*?[0-9])(?=.*?[~`!@#$%\^&*()\-_=+\[\]{};:\'.,\|/?\>\<]).{8,}" title="password must be 8 characters" placeholder="PassWord" required="" />
+			</div>
+			<div class="field-w3-agile-grid rightf">
+				<input type="password" name="textfield11" pattern="(?=.*\d)(?=.*[a-z])(?=.*?[0-9])(?=.*?[~`!@#$%\^&*()\-_=+\[\]{};:\'.,\|/?\>\<]).{8,}" title="password must be 8 characters" placeholder="Confirm PassWord" required="" />
+			</div>
+			
+			<input type="submit" value="SIGNUP">
+		</form>
+	</div>
+ <script>
+     function validate() {
+         var psw=document.getElementById("textfield10").value;
+         var cpsw=document.getElementById("textfield11").value;
+         if(psw != cpsw) {
+             alert('Password mismatch');
+             return false;
+         }
+         return true;
+     }
+ </script>
+ 		<!--copyright-->
+{#	<div class="copy-wthree">#}
+{#		<p>© 2018 Queer Signup Form . All Rights Reserved | Design by#}
+{#			<a href="http://w3layouts.com/" target="_blank">W3layouts</a>#}
+{#		</p>#}
+{#	</div>#}
+	<!--//copyright-->
+
+
+</body>
+</html>

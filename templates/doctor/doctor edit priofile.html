@@ -1,0 +1,225 @@
+{% include "doctor/doctor_headers.html" %}
+<br><br>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #4361ee, #3a0ca3);">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3 class="mb-1"><i class="fas fa-user-edit me-2"></i>Edit Profile</h3>
+                            <p class="mb-0 opacity-75">Update your professional information</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="/myapp/doctor_profile/" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form id="form1" name="form1" method="post" action="/myapp/doctor_edit_profile_post/" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <!-- Personal Information -->
+                            <div class="col-md-12">
+                                <h5 class="mb-3" style="color: #3a0ca3;">
+                                    <i class="fas fa-user-circle me-2"></i>Personal Information
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label for="textfield" class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" name="textfield" class="form-control form-control-lg"
+                                           required pattern="[a-zA-Z ]+" id="textfield" value="{{ data.name }}"
+                                           style="border-radius: 8px; border: 2px solid #e9ecef; padding: 12px;">
+                                    <div class="form-text">Enter your full name (letters only)</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="textfield4" class="form-label fw-semibold">Phone Number</label>
+                                    <input type="text" name="textfield4" class="form-control form-control-lg"
+                                           required pattern="[6789][0-9]{9}" id="textfield4" value="{{ data.phonenumber }}"
+                                           style="border-radius: 8px; border: 2px solid #e9ecef; padding: 12px;">
+                                    <div class="form-text">10-digit Indian mobile number starting with 6,7,8,9</div>
+                                </div>
+                            </div>
+
+                            <!-- Professional Information -->
+                            <div class="col-md-12">
+                                <h5 class="mb-3" style="color: #3a0ca3;">
+                                    <i class="fas fa-graduation-cap me-2"></i>Professional Information
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label for="textfield7" class="form-label fw-semibold">Qualification</label>
+                                    <input type="text" name="textfield7" class="form-control form-control-lg"
+                                           required pattern="[a-zA-Z ]+" id="textfield7" value="{{ data.qualification }}"
+                                           style="border-radius: 8px; border: 2px solid #e9ecef; padding: 12px;">
+                                    <div class="form-text">Your medical qualifications</div>
+                                </div>
+
+                                <!-- Profile Photo -->
+                                <div class="mb-3">
+                                    <label for="textfield6" class="form-label fw-semibold">Profile Photo</label>
+                                    <input type="file" class="form-control form-control-lg" name="photo" id="textfield6"
+                                           style="border-radius: 8px; border: 2px solid #e9ecef; padding: 12px;"
+                                           accept="image/*">
+                                    <div class="form-text">Upload a professional profile photo</div>
+                                    {% if data.photo %}
+                                    <div class="mt-2">
+                                        <span class="text-muted">Current Photo:</span>
+                                        <img src="{{ data.photo }}" class="img-thumbnail mt-1" height="80" width="80"
+                                             style="border-radius: 8px;">
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Proof Document -->
+                                <div class="mb-3">
+                                    <label for="textfield8" class="form-label fw-semibold">Proof Document</label>
+                                    <input type="file" name="proof" class="form-control form-control-lg" id="textfield8"
+                                           style="border-radius: 8px; border: 2px solid #e9ecef; padding: 12px;"
+                                           accept="image/*,.pdf,.doc,.docx">
+                                    <div class="form-text">Upload verification document (ID proof, license, etc.)</div>
+                                    {% if data.proof %}
+                                    <div class="mt-2">
+                                        <span class="text-muted">Current Document:</span>
+                                        <img src="{{ data.proof }}" class="img-thumbnail mt-1" height="80" width="80"
+                                             style="border-radius: 8px;">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-lg text-white fw-bold px-5 py-3"
+                                        style="background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 10px;">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                                <a href="/myapp/doctor_profile/" class="btn btn-outline-secondary btn-lg px-5 py-3 ms-2"
+                                   style="border-radius: 10px;">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+
+    .form-control {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4361ee !important;
+        box-shadow: 0 0 0 0.3rem rgba(67, 97, 238, 0.15) !important;
+        transform: translateY(-2px);
+    }
+
+    .form-label {
+        color: #3a0ca3;
+        font-weight: 600;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .img-thumbnail {
+        transition: all 0.3s ease;
+    }
+
+    .img-thumbnail:hover {
+        transform: scale(1.05);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Real-time validation feedback
+        $('input[pattern]').on('input', function() {
+            var pattern = new RegExp($(this).attr('pattern'));
+            var value = $(this).val();
+
+            if (value === '') {
+                $(this).removeClass('is-valid is-invalid');
+            } else if (pattern.test(value)) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        });
+
+        // File input change handlers
+        $('#textfield6').change(function() {
+            var fileName = $(this).val().split('\\').pop();
+            if (fileName) {
+                $(this).next('.form-text').html('<i class="fas fa-check text-success me-1"></i>Selected: ' + fileName);
+            }
+        });
+
+        $('#textfield8').change(function() {
+            var fileName = $(this).val().split('\\').pop();
+            if (fileName) {
+                $(this).next('.form-text').html('<i class="fas fa-check text-success me-1"></i>Selected: ' + fileName);
+            }
+        });
+
+        // Form submission validation
+        $('form').on('submit', function(e) {
+            var isValid = true;
+            $('input[required]').each(function() {
+                if ($(this).val() === '') {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill all required fields correctly.');
+            }
+        });
+
+        // Add loading state to submit button
+        $('form').on('submit', function() {
+            var submitBtn = $('#button');
+            submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Updating...');
+            submitBtn.prop('disabled', true);
+        });
+    });
+</script>
+
+<br><br>
+{% include "admin/admin_footer.html" %}
